@@ -1,0 +1,28 @@
+{
+  "name": "getfont",
+  "version": "1.0.4",
+  "description": "Get font from web to local for web",
+  "main": "./bin/getfont",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabiorogeriosj/getfont.git"
+  },
+  "keywords": [
+    "font"
+  ],
+  "author": "Fabio Rogerio SJ <fabio.rogerio.sj@gmail.com> (http://fabiorogeriosj.com.br)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fabiorogeriosj/getfont/issues"
+  },
+  "homepage": "https://github.com/fabiorogeriosj/getfont#readme",
+  "dependencies": {
+    "colors": "^1.1.2"
+  },
+  "bin": {
+    "getfont": "./bin/getfont"
+  }
+}
