@@ -48,14 +48,12 @@ $ getfont "Ubuntu:400,300,700|Open+Sans:400,300" --woff
 ```
 
 Formats:
-	--ttf: Get font format .ttf
-	
-	--woff: Get font format .woff
-	
-	--woff2: Get font format .woff2
-	
-	--eot: Get font format .eot
-	
+```
+--ttf: Get font format .ttf
+--woff: Get font format .woff
+--woff2: Get font format .woff2
+--eot: Get font format .eot
+```
 
 ## Licence
 [MIT License](./LICENSE)
