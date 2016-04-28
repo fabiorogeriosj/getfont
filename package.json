@@ -1,6 +1,6 @@
 {
   "name": "getfont",
-  "version": "1.0.15",
+  "version": "1.0.19",
   "description": "Get font from web to local to use the web",
   "main": "./bin/getfont",
   "scripts": {

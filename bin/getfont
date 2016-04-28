@@ -3,10 +3,8 @@
 var colors = require('colors');
 var fs = require('fs');
 var request = require('request');
-var dirCssFont = './css';
-var dirFileFont = './fonts';
-var nameCssFont = dirCssFont+'/font.css';
 var cssString = "";
+var isIonic=false;
 var userAgentMap = {
 	ttf:'(none)',
 	woff:'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:27.0) Gecko/20100101 Firefox/27.0',
@@ -15,9 +13,26 @@ var userAgentMap = {
 	svg: 'Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.10'
 };
 
+var fontSource = process.argv[2];
+var par1 = process.argv[3];
+var par2 = process.argv[4];
 
 
 (function getFont() {
+
+	var dirCssFont = './css';
+	var dirFileFont = './fonts';
+	var nameCssFont = dirCssFont+'/font.css';
+	var indexHtml = "./index.html";
+	if(par1 == "--ionic" || par2 == "--ionic"){
+		isIonic = true;
+		if (fs.existsSync("./www")){
+		    dirCssFont = './www/css';
+			dirFileFont = './www/fonts';
+			nameCssFont = dirCssFont+'/font.css';
+			indexHtml = "./www/index.html";
+		}
+	}
 
 	var showIntro = function (){
 		console.log("  ___  ____  ____  ____  _____  _  _  ____ ".green);
@@ -49,6 +64,43 @@ var userAgentMap = {
 		console.log(" \\___/(____) (__) (__)  (_____)(_)\\_) (__) ".green);
 
 		console.log('\nChecking source...'.bold);
+	}
+
+	var isFormat = function (f){
+		if(!f) f="";
+		f = f.replace('--','');
+		var r = null;
+		for(i in userAgentMap){
+			if(i == f){
+				r = i;
+			}
+		}
+		return r;
+	}
+
+	var posScript = function(){
+		if(isIonic){
+			if (fs.existsSync(indexHtml)) {
+			    fs.readFile(indexHtml, "utf8", function(err, data) {
+			        if (err) throw err;
+			        if(data.indexOf("css/font.css") < 0){
+			        	data = data.replace('<link href="lib/ionic/css/ionic.css" rel="stylesheet">','<link href="lib/ionic/css/ionic.css" rel="stylesheet">\n    <!-- GetFont -->\n    <link href="css/font.css" rel="stylesheet">\n    <!-- End GetFont -->');
+				        //console.log(data);
+				        fs.writeFile(indexHtml, data, function(err) {
+						    if(err) {
+						        console.log("Error write "+indexHtml+":".red, err);
+						    } else {
+				        		console.log("Added call font.css in: ".green, indexHtml.bold);
+				        	}
+						}); 
+			        } else {
+			        	console.log("Call for font.css already exists in the file: ".yellow+indexHtml.yellow+"!".yellow);
+			        }
+			    });
+			} else {
+				console.log("File "+indexHtml+" not found!".red);
+			}
+		}
 	}
 
 	var checkAndDownloadFont = function (){
@@ -94,22 +146,25 @@ var userAgentMap = {
 		});
 	}
 	var writeCss = function (){
+		if (!fs.existsSync(dirCssFont)){
+		    fs.mkdirSync(dirCssFont);
+		}
 		fs.writeFile(nameCssFont, cssString, function(err) {
 		    if(err) {
 		        return console.log(err);
 		    }
 		    console.log("Create css file: ".green , nameCssFont.bold);
+		    posScript();
 		}); 
 	}
-
-
-	var fontSource = process.argv[2];
-	var typeFont = process.argv[3];
 	if(!fontSource){
 		showIntro();
 	} else {
+		var typeFont = isFormat(par1);
+		if(!typeFont){
+			typeFont = isFormat(par2);
+		}
 		if(typeFont) {
-			typeFont = typeFont.replace('--','');
 			typeFont = userAgentMap[typeFont];
 			if(!typeFont) {
 				typeFont = userAgentMap["woff2"];
@@ -134,11 +189,12 @@ var userAgentMap = {
 		request(options, function (error, response, body) {
 		  if (!error && response.statusCode == 200) {
 		    //console.log(body) // Show the HTML for the Google homepage. 
-		    if (!fs.existsSync(dirCssFont)){
-			    fs.mkdirSync(dirCssFont);
+		    if (isIonic && !fs.existsSync(dirCssFont)){
+			    console.log("You are not within a project folder Ionic!".red);
+			} else {
+				cssString = body;
+				checkAndDownloadFont();
 			}
-			cssString = body;
-			checkAndDownloadFont();
 		  } else {
 		  	if(response.statusCode == 404){
 		  		console.log("Error get font: URL does not exist! ".red);
