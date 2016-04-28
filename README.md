@@ -64,6 +64,7 @@ You can add the source using the parameter ```--ionic```
 
 ```
 $ getfont Ubuntu --ionic
+```
 
 ## Licence
 [MIT License](./LICENSE)
