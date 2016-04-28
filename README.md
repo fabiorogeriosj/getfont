@@ -1,5 +1,7 @@
 # GetFont
 
+[![GetFont Logo](src/getfont.png)](https://www.npmjs.com/package/getfont)
+
 A simple download font for use in webapp.
 https://www.npmjs.com/package/getfont
 
